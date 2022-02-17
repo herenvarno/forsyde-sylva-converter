@@ -1,17 +1,12 @@
+#!/usr/bin/env python3
+
+from math import e
 import sys
 import xml.etree.ElementTree as et
-from matplotlib.font_manager import json_dump
-import networkx as nx
 import matplotlib.pyplot as plt
-import json
-
-
-class SDF:
-    """SDF Data Structure"""
-
-    def __init__(self):
-        pass
-
+from jinja2 import Template
+import os
+import stat
 
 class FileIO:
     """IO class for XML files"""
@@ -51,6 +46,10 @@ class FileIO:
                         break
                 n["func"] = trait
 
+                if not n["func"]:
+                    print ("ERROR: Undefined function implementation!")
+                    exit(-1)
+
                 prop_map = {}
                 prop_name = []
                 prop_value = []
@@ -58,14 +57,27 @@ class FileIO:
                     prop_name.append(pn.text)
                 for pv in node.findall("./propertiesValues"):
                     prop_value_map = {}
+                    
                     values = []
                     indices = []
+                    type_names = []
+                    type_sizes = []
                     for v in pv.findall("./values"):
                         values.append(v.attrib["intValue"])
                     for i in pv.findall("./indexes"):
                         indices.append(i.text)
+                    for i in pv.findall("./typeName"):
+                        type_names.append(i.text)
+                    for i in pv.findall("./typeSize"):
+                        type_sizes.append(i.attrib["intValue"])
+
+                    # Check the the vectors has the same size, that means all the ports has all the needed fields
+                    if(len(values) != len(indices) or len(values) != len(type_names) or len(values)!=len(type_sizes)):
+                        print("Error: Some port don't have sufficient properties!")
+                        exit(-1)
+
                     for i in range(len(indices)):
-                        prop_value_map[indices[i]] = values[i]
+                        prop_value_map[indices[i]] = {"value":values[i], "index":indices[i], "type_name": type_names[i], "type_size": type_sizes[i]}
                     prop_value.append(prop_value_map)
                 for i in range(len(prop_name)):
                     prop_map[prop_name[i]] = prop_value[i]
@@ -141,48 +153,52 @@ class FileIO:
         return sdf
 
     def save(self, filename, sylva_sdf):
-        
-
-
-class Visulizer:
-    """Visulize the basic SDF"""
-
-    def __init__(self):
-        pass
-
-    def visualize_forsyde(self, sdf):
-        g = nx.MultiDiGraph()
-        for n in sdf["nodes"]:
-            g.add_node(n["name"])
-        for e in sdf["edges"]:
-            g.add_edge(e["src"], e["dst"])
-
-        options = {
-            "with_labels": True,
-            "node_size": 3000,
-            "node_shape": "s",
-            "node_color": "#aaaaaa",
-        }
-        subax1 = plt.subplot(111)
-        nx.draw(g, pos=nx.spring_layout(g), **options)
-        plt.show()
+        original_stdout = sys.stdout
+        with open(filename, "w+") as f:
+            sys.stdout = f
+            print(sylva_sdf)
+            sys.stdout = original_stdout
     
-    def visualize_sylva(self, sdf):
-        g = nx.MultiDiGraph()
-        for n in sdf["actors"]:
-            g.add_node(n["index"])
-        for e in sdf["edges"]:
-            g.add_edge(e["src_actor"], e["dest_actor"])
+    def save_dot(self, filename, sylva_sdf):
+        data = {"actors":[{"index": n["index"], "name": n["name"]} for n in sylva_sdf["actors"]], "edges":[e for e in sylva_sdf["edges"]]}
+        for e in data["edges"]:
+            for n in sylva_sdf["actors"]:
+                if n["index"] == e["src_actor"]:
+                    e["src_count"] = n["output_ports"][e["src_port"]]["count"]
+                if n["index"] == e["dest_actor"]:
+                    e["dest_count"] = n["input_ports"][e["dest_port"]]["count"]
 
-        options = {
-            "with_labels": True,
-            "node_size": 3000,
-            "node_shape": "s",
-            "node_color": "#aaaaaa",
-        }
-        subax1 = plt.subplot(111)
-        nx.draw(g, pos=nx.spring_layout(g), **options)
-        plt.show()
+        tm = Template("""
+digraph g{
+    
+    {% for n in sdf.actors -%}
+    {{n.index}} [shape=box, label="{{n.name}}\\n({{n.index}})"];
+    {% endfor -%}
+
+    {% for e in sdf.edges -%}
+    {{e.src_actor}} -> {{e.dest_actor}} [headlabel="{{e.src_count}}", taillabel="{{e.dest_count}}"];
+    {% endfor -%}
+}        
+""")
+        msg = tm.render(sdf=data)
+        with open(filename, "w+") as f:
+            f.write(msg)
+
+    def save_sh(self, filename):
+        tm = Template("""
+#!/usr/bin/env bash
+
+for file in ./*.dot; do
+basename=${file%.*}
+dot -Tpdf ${basename}.dot -o ${basename}.pdf
+done       
+""")
+        msg = tm.render()
+        with open(filename, "w+") as f:
+            f.write(msg)
+
+        st = os.stat(filename)
+        os.chmod(filename, st.st_mode | stat.S_IEXEC)
 
 
 class ForsydeSylvaConverter:
@@ -253,12 +269,14 @@ class ForsydeSylvaConverter:
                     if port["io"] != "in" and port["io"] != "out":
                         continue
                     if port["io"] == "in":
-                        p["count"] = int(node["prop"]["consumption"][p["name"]])
+                        p["count"] = int(node["prop"]["consumption"][p["name"]]["value"])
+                        p["type"] = {"name":node["prop"]["consumption"][p["name"]]["type_name"], "size":int(node["prop"]["consumption"][p["name"]]["type_size"])}
                         input_ports.append(p)
                         name_to_port[p["name"]] = j
                         j=j+1
                     elif port["io"] == "out":
-                        p["count"] = int(node["prop"]["production"][p["name"]])
+                        p["count"] = int(node["prop"]["production"][p["name"]]["value"])
+                        p["type"] = {"name":node["prop"]["production"][p["name"]]["type_name"], "size":int(node["prop"]["production"][p["name"]]["type_size"])}
                         output_ports.append(p)
                         name_to_port[p["name"]] = k
                         k=k+1
@@ -288,19 +306,21 @@ class ForsydeSylvaConverter:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         print("Wrong argument!")
+        print("Use: ./ForsydeSylvaConverter.py <input xml> <output directory>")
         exit(-1)
 
     forsyde_xml = sys.argv[1]
+    output_path = sys.argv[2]
+    sylva_dot = output_path + "/output.dot"
+    sylva_sdfg = output_path + "/output.sdfg"
+    convert_sh = output_path + "/convert.sh"
 
     io = FileIO()
-    sdf = io.load(forsyde_xml)
-    print(sdf)
-
+    forsyde_sdf = io.load(forsyde_xml)
     conv = ForsydeSylvaConverter()
-    sdf_sylva = conv.convert(sdf)
-    print(sdf_sylva)
-
-    vs = Visulizer()
-    vs.visualize_sylva(sdf_sylva)
+    sylva_sdf = conv.convert(forsyde_sdf)
+    io.save_dot(sylva_dot, sylva_sdf)
+    io.save(sylva_sdfg, sylva_sdf)
+    io.save_sh(convert_sh)

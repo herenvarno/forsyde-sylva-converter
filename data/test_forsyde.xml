@@ -3,14 +3,19 @@
     <nodes identifier="sobel/getPx">
         <traits>visualization::Visualizable</traits>
         <traits>moc::sdf::SDFComb</traits>
+        <traits>func::silago::sobel_get_px</traits>
         <ports>gx</ports>
         <ports>combinator</ports>
         <ports>gy</ports>
         <ports>imgInput</ports>
         <propertiesValues xsi:type="forsyde.io.eclipse.systemgraph:StringMapVertexProperty">
             <values intValue="6" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
+            <typeName>signed</typeName>
+            <typeSize intValue="32" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
             <indexes>gx</indexes>
             <values intValue="6" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
+            <typeName>signed</typeName>
+            <typeSize intValue="32" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
             <indexes>gy</indexes>
         </propertiesValues>
         <propertiesNames>production</propertiesNames>
@@ -18,16 +23,21 @@
     <nodes identifier="sobel/Gx">
         <traits>visualization::Visualizable</traits>
         <traits>moc::sdf::SDFComb</traits>
+        <traits>func::silago::sobel_gx</traits>
         <ports>gx</ports>
         <ports>combinator</ports>
         <ports>resx</ports>
         <propertiesValues xsi:type="forsyde.io.eclipse.systemgraph:StringMapVertexProperty">
             <values intValue="1" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
+            <typeName>signed</typeName>
+            <typeSize intValue="32" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
             <indexes>resx</indexes>
         </propertiesValues>
         <propertiesNames>production</propertiesNames>
         <propertiesValues xsi:type="forsyde.io.eclipse.systemgraph:StringMapVertexProperty">
             <values intValue="6" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
+            <typeName>signed</typeName>
+            <typeSize intValue="32" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
             <indexes>gx</indexes>
         </propertiesValues>
         <propertiesNames>consumption</propertiesNames>
@@ -35,16 +45,21 @@
     <nodes identifier="sobel/Gy">
         <traits>visualization::Visualizable</traits>
         <traits>moc::sdf::SDFComb</traits>
+        <traits>func::silago::sobel_gy</traits>
         <ports>combinator</ports>
         <ports>gy</ports>
         <ports>resy</ports>
         <propertiesValues xsi:type="forsyde.io.eclipse.systemgraph:StringMapVertexProperty">
             <values intValue="1" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
+            <typeName>signed</typeName>
+            <typeSize intValue="32" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
             <indexes>resy</indexes>
         </propertiesValues>
         <propertiesNames>production</propertiesNames>
         <propertiesValues xsi:type="forsyde.io.eclipse.systemgraph:StringMapVertexProperty">
             <values intValue="6" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
+            <typeName>signed</typeName>
+            <typeSize intValue="32" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
             <indexes>gy</indexes>
         </propertiesValues>
         <propertiesNames>consumption</propertiesNames>
@@ -52,14 +67,19 @@
     <nodes identifier="sobel/Abs">
         <traits>visualization::Visualizable</traits>
         <traits>moc::sdf::SDFComb</traits>
+        <traits>func::silago::sobel_abs</traits>
         <ports>combinator</ports>
         <ports>resy</ports>
         <ports>resx</ports>
         <ports>imgOutput</ports>
         <propertiesValues xsi:type="forsyde.io.eclipse.systemgraph:StringMapVertexProperty">
             <values intValue="1" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
+            <typeName>signed</typeName>
+            <typeSize intValue="32" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
             <indexes>resy</indexes>
             <values intValue="1" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
+            <typeName>signed</typeName>
+            <typeSize intValue="32" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
             <indexes>resx</indexes>
         </propertiesValues>
         <propertiesNames>consumption</propertiesNames>
