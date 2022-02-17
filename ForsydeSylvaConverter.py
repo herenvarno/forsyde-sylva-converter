@@ -3,7 +3,6 @@
 from math import e
 import sys
 import xml.etree.ElementTree as et
-import matplotlib.pyplot as plt
 from jinja2 import Template
 import os
 import stat
