@@ -1,1 +1,218 @@
-{'actors': [{'index': 0, 'name': 'func::silago::sobel_get_px', 'input_ports': [], 'output_ports': [{'name': 'gx', 'index': 0, 'count': 6, 'type': {'name': 'signed', 'size': 32}}, {'name': 'gy', 'index': 0, 'count': 6, 'type': {'name': 'signed', 'size': 32}}], 'prev': [], 'next': [{'src_actor': 0, 'src_port': 0, 'dest_actor': 1, 'dest_port': 0, 'src_count': 6, 'dest_count': 6}, {'src_actor': 0, 'src_port': 1, 'dest_actor': 2, 'dest_port': 0, 'src_count': 6, 'dest_count': 6}]}, {'index': 1, 'name': 'func::silago::sobel_gx', 'input_ports': [{'name': 'gx', 'index': 0, 'count': 6, 'type': {'name': 'signed', 'size': 32}}], 'output_ports': [{'name': 'resx', 'index': 1, 'count': 1, 'type': {'name': 'signed', 'size': 32}}], 'prev': [{'src_actor': 0, 'src_port': 0, 'dest_actor': 1, 'dest_port': 0, 'src_count': 6, 'dest_count': 6}], 'next': [{'src_actor': 1, 'src_port': 0, 'dest_actor': 3, 'dest_port': 1, 'src_count': 1, 'dest_count': 1}]}, {'index': 2, 'name': 'func::silago::sobel_gy', 'input_ports': [{'name': 'gy', 'index': 0, 'count': 6, 'type': {'name': 'signed', 'size': 32}}], 'output_ports': [{'name': 'resy', 'index': 1, 'count': 1, 'type': {'name': 'signed', 'size': 32}}], 'prev': [{'src_actor': 0, 'src_port': 1, 'dest_actor': 2, 'dest_port': 0, 'src_count': 6, 'dest_count': 6}], 'next': [{'src_actor': 2, 'src_port': 0, 'dest_actor': 3, 'dest_port': 0, 'src_count': 1, 'dest_count': 1}]}, {'index': 3, 'name': 'func::silago::sobel_abs', 'input_ports': [{'name': 'resy', 'index': 0, 'count': 1, 'type': {'name': 'signed', 'size': 32}}, {'name': 'resx', 'index': 1, 'count': 1, 'type': {'name': 'signed', 'size': 32}}], 'output_ports': [], 'prev': [{'src_actor': 1, 'src_port': 0, 'dest_actor': 3, 'dest_port': 1, 'src_count': 1, 'dest_count': 1}, {'src_actor': 2, 'src_port': 0, 'dest_actor': 3, 'dest_port': 0, 'src_count': 1, 'dest_count': 1}], 'next': []}], 'edges': [{'src_actor': 0, 'src_port': 0, 'dest_actor': 1, 'dest_port': 0, 'src_count': 6, 'dest_count': 6}, {'src_actor': 0, 'src_port': 1, 'dest_actor': 2, 'dest_port': 0, 'src_count': 6, 'dest_count': 6}, {'src_actor': 1, 'src_port': 0, 'dest_actor': 3, 'dest_port': 1, 'src_count': 1, 'dest_count': 1}, {'src_actor': 2, 'src_port': 0, 'dest_actor': 3, 'dest_port': 0, 'src_count': 1, 'dest_count': 1}]}
+{
+    "actors": [
+        {
+            "index": 0,
+            "input_ports": [],
+            "name": "func::silago::sobel_get_px",
+            "next": [
+                {
+                    "dest_actor": 1,
+                    "dest_count": 6,
+                    "dest_port": 0,
+                    "src_actor": 0,
+                    "src_count": 6,
+                    "src_port": 0
+                },
+                {
+                    "dest_actor": 2,
+                    "dest_count": 6,
+                    "dest_port": 0,
+                    "src_actor": 0,
+                    "src_count": 6,
+                    "src_port": 1
+                }
+            ],
+            "output_ports": [
+                {
+                    "count": 6,
+                    "index": 0,
+                    "name": "gx",
+                    "type": {
+                        "name": "signed",
+                        "size": 32
+                    }
+                },
+                {
+                    "count": 6,
+                    "index": 1,
+                    "name": "gy",
+                    "type": {
+                        "name": "signed",
+                        "size": 32
+                    }
+                }
+            ],
+            "prev": []
+        },
+        {
+            "index": 1,
+            "input_ports": [
+                {
+                    "count": 6,
+                    "index": 0,
+                    "name": "gx",
+                    "type": {
+                        "name": "signed",
+                        "size": 32
+                    }
+                }
+            ],
+            "name": "func::silago::sobel_gx",
+            "next": [
+                {
+                    "dest_actor": 3,
+                    "dest_count": 1,
+                    "dest_port": 1,
+                    "src_actor": 1,
+                    "src_count": 1,
+                    "src_port": 0
+                }
+            ],
+            "output_ports": [
+                {
+                    "count": 1,
+                    "index": 0,
+                    "name": "resx",
+                    "type": {
+                        "name": "signed",
+                        "size": 32
+                    }
+                }
+            ],
+            "prev": [
+                {
+                    "dest_actor": 1,
+                    "dest_count": 6,
+                    "dest_port": 0,
+                    "src_actor": 0,
+                    "src_count": 6,
+                    "src_port": 0
+                }
+            ]
+        },
+        {
+            "index": 2,
+            "input_ports": [
+                {
+                    "count": 6,
+                    "index": 0,
+                    "name": "gy",
+                    "type": {
+                        "name": "signed",
+                        "size": 32
+                    }
+                }
+            ],
+            "name": "func::silago::sobel_gy",
+            "next": [
+                {
+                    "dest_actor": 3,
+                    "dest_count": 1,
+                    "dest_port": 0,
+                    "src_actor": 2,
+                    "src_count": 1,
+                    "src_port": 0
+                }
+            ],
+            "output_ports": [
+                {
+                    "count": 1,
+                    "index": 0,
+                    "name": "resy",
+                    "type": {
+                        "name": "signed",
+                        "size": 32
+                    }
+                }
+            ],
+            "prev": [
+                {
+                    "dest_actor": 2,
+                    "dest_count": 6,
+                    "dest_port": 0,
+                    "src_actor": 0,
+                    "src_count": 6,
+                    "src_port": 1
+                }
+            ]
+        },
+        {
+            "index": 3,
+            "input_ports": [
+                {
+                    "count": 1,
+                    "index": 0,
+                    "name": "resy",
+                    "type": {
+                        "name": "signed",
+                        "size": 32
+                    }
+                },
+                {
+                    "count": 1,
+                    "index": 1,
+                    "name": "resx",
+                    "type": {
+                        "name": "signed",
+                        "size": 32
+                    }
+                }
+            ],
+            "name": "func::silago::sobel_abs",
+            "next": [],
+            "output_ports": [],
+            "prev": [
+                {
+                    "dest_actor": 3,
+                    "dest_count": 1,
+                    "dest_port": 1,
+                    "src_actor": 1,
+                    "src_count": 1,
+                    "src_port": 0
+                },
+                {
+                    "dest_actor": 3,
+                    "dest_count": 1,
+                    "dest_port": 0,
+                    "src_actor": 2,
+                    "src_count": 1,
+                    "src_port": 0
+                }
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "dest_actor": 1,
+            "dest_count": 6,
+            "dest_port": 0,
+            "src_actor": 0,
+            "src_count": 6,
+            "src_port": 0
+        },
+        {
+            "dest_actor": 2,
+            "dest_count": 6,
+            "dest_port": 0,
+            "src_actor": 0,
+            "src_count": 6,
+            "src_port": 1
+        },
+        {
+            "dest_actor": 3,
+            "dest_count": 1,
+            "dest_port": 1,
+            "src_actor": 1,
+            "src_count": 1,
+            "src_port": 0
+        },
+        {
+            "dest_actor": 3,
+            "dest_count": 1,
+            "dest_port": 0,
+            "src_actor": 2,
+            "src_count": 1,
+            "src_port": 0
+        }
+    ]
+}

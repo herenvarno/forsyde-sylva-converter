@@ -6,6 +6,7 @@ import xml.etree.ElementTree as et
 from jinja2 import Template
 import os
 import stat
+import json
 
 class FileIO:
     """IO class for XML files"""
@@ -154,9 +155,7 @@ class FileIO:
     def save(self, filename, sylva_sdf):
         original_stdout = sys.stdout
         with open(filename, "w+") as f:
-            sys.stdout = f
-            print(sylva_sdf)
-            sys.stdout = original_stdout
+            f.write(json.dumps(sylva_sdf, indent=4, sort_keys=True))
     
     def save_dot(self, filename, sylva_sdf):
         data = {"actors":[{"index": n["index"], "name": n["name"]} for n in sylva_sdf["actors"]], "edges":[e for e in sylva_sdf["edges"]]}
@@ -264,16 +263,17 @@ class ForsydeSylvaConverter:
                 for port_name, port in node["ports"].items():
                     p = {}
                     p["name"] = port["name"]
-                    p["index"] = j
                     if port["io"] != "in" and port["io"] != "out":
                         continue
                     if port["io"] == "in":
+                        p["index"] = j
                         p["count"] = int(node["prop"]["consumption"][p["name"]]["value"])
                         p["type"] = {"name":node["prop"]["consumption"][p["name"]]["type_name"], "size":int(node["prop"]["consumption"][p["name"]]["type_size"])}
                         input_ports.append(p)
                         name_to_port[p["name"]] = j
                         j=j+1
                     elif port["io"] == "out":
+                        p["index"] = k
                         p["count"] = int(node["prop"]["production"][p["name"]]["value"])
                         p["type"] = {"name":node["prop"]["production"][p["name"]]["type_name"], "size":int(node["prop"]["production"][p["name"]]["type_size"])}
                         output_ports.append(p)
