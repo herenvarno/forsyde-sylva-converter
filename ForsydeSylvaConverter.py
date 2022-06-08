@@ -312,6 +312,10 @@ if __name__ == "__main__":
 
     forsyde_xml = sys.argv[1]
     output_path = sys.argv[2]
+
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+
     sylva_dot = output_path + "/output.dot"
     sylva_sdfg = output_path + "/output.sdfg"
     convert_sh = output_path + "/convert.sh"
